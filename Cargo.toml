@@ -1,0 +1,14 @@
+[workspace]
+members = [
+    "bin/helix-wowtracker-api",
+    "helix-wowtracker-domain",
+    "storage/helix-pg-db-wowtracker-storage"
+]
+
+##DEFAULT RUNNING BIN
+default-members=["bin/helix-wowtracker-api"]
+
+
+##__FIX FOR ARM COMPILATION SINCE RUST 1.38
+[profile.release]
+codegen-units = 1
