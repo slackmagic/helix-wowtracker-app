@@ -46,7 +46,8 @@ async fn main() -> io::Result<()> {
             .service(
                 web::scope("/api")
                     .route("/_", web::get().to(healthcheck))
-                    .route("/version", web::get().to(version)), //.service(web::scope("/").configure(get_routes_configuration)),
+                    .route("/version", web::get().to(version))
+                    .service(web::scope("/wowtracker").configure(get_routes_configuration)),
             )
             .service(web::scope("/").configure(get_static_files_configuration))
     })
@@ -64,34 +65,10 @@ fn get_routes_configuration(cfg: &mut web::ServiceConfig) {
     //___DOMAIN___
     //----------------------------------------------------------
 
-    /*cfg.service(
+    cfg.service(
         web::scope("")
-            .route("/login", web::post().to(login))
-            .service(
-                web::scope("/persons")
-                    .route("", web::get().to(get_all_persons))
-                    .route("", web::post().to(create_person))
-                    .route("", web::put().to(update_person))
-                    //.route("", web::delete().to(delete_person))
-                    .service(
-                        web::scope("/{uuid}")
-                            .route("", web::get().to(get_person))
-                            .route("", web::delete().to(delete_person)),
-                    ),
-            )
-            .service(
-                web::scope("/users")
-                    .route("", web::get().to(get_all_users))
-                    .route("", web::post().to(create_user))
-                    .route("", web::put().to(update_user))
-                    //.route("", web::delete().to(delete_user))
-                    .service(
-                        web::scope("/{uuid}")
-                            .route("", web::get().to(get_user))
-                            .route("", web::delete().to(delete_user)),
-                    ),
-            ),
-    );*/
+            .service(web::scope("/characters").route("", web::get().to(get_all_characters))),
+    );
 }
 
 fn get_static_files_configuration(cfg: &mut web::ServiceConfig) {
