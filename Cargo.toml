@@ -2,7 +2,6 @@
 members = [
     "bin/helix-wowtracker-api",
     "helix-wowtracker-domain",
-    "storage/helix-pg-db-wowtracker-storage"
 ]
 
 ##DEFAULT RUNNING BIN

@@ -30,7 +30,7 @@ chrono = { version = "^0.4", features = ["serde"] }
 
 ##DOMAIN
 helix-wowtracker-domain = { path = "../../helix-wowtracker-domain" }
-helix-pg-db-wowtracker-storage = { path = "../../storage/helix-pg-db-wowtracker-storage" }
+helix-tracker-lib = {git = "https://github.com/slackmagic/helix-shared-lib", branch = "master"}
 helix-auth-lib = {git = "https://github.com/slackmagic/helix-shared-lib", branch = "master"}
 helix-config-lib = {git = "https://github.com/slackmagic/helix-shared-lib", branch = "master"}
 

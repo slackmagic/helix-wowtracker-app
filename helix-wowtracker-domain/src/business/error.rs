@@ -1,10 +1,11 @@
 use crate::storage::error::StorageError;
+use helix_tracker_lib::business::error::TrackerDomainError;
 use std::result::Result;
 use thiserror::Error;
 
 //Define the possible errors
 #[derive(Error, Debug)]
-pub enum UserDomainError {
+pub enum WowTrackerDomainError {
     #[error("NotImplemented")]
     NotImplemented,
     #[error("Storage Error")]
@@ -16,7 +17,12 @@ pub enum UserDomainError {
         #[from]
         source: StorageError,
     },
+    #[error("Tracker error: {source}")]
+    Tracker {
+        #[from]
+        source: TrackerDomainError,
+    },
 }
 
 //Define a generic error type to simplify return.
-pub type UserDomainResult<T> = Result<T, UserDomainError>;
+pub type WowTrackerDomainResult<T> = Result<T, WowTrackerDomainError>;

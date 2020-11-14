@@ -1,21 +1,16 @@
 use crate::business::error::*;
-use crate::core::app_user::AppUser;
-use crate::core::person::Person;
+use crate::core::character_data::CharacterData;
+use async_trait::async_trait;
 
-pub trait UserDomainTrait: Send {
-    fn generate_user_auth_key(&self, login: &String, password: &String) -> String;
+#[async_trait]
+pub trait WowTrackerDomainTrait: Send {
+    fn get_last_characters_data(
+        &self,
+        owner_uuid: &uuid::Uuid,
+    ) -> WowTrackerDomainResult<Vec<CharacterData>>;
 
-    fn login(&self, login: &String, password: &String) -> UserDomainResult<AppUser>;
-
-    fn get_all_users<'a>(&self) -> UserDomainResult<Vec<AppUser>>;
-    fn get_user<'a>(&self, uuid: &uuid::Uuid) -> UserDomainResult<Option<AppUser>>;
-    fn create_user(&self, user: AppUser) -> UserDomainResult<AppUser>;
-    fn update_user(&self, user: AppUser) -> UserDomainResult<AppUser>;
-    fn delete_user(&self, user: AppUser) -> UserDomainResult<()>;
-
-    fn get_all_persons(&self) -> UserDomainResult<Vec<Person>>;
-    fn get_person(&self, uuid: &uuid::Uuid) -> UserDomainResult<Option<Person>>;
-    fn create_person(&self, person: Person) -> UserDomainResult<Person>;
-    fn update_person<'a>(&self, person: Person) -> UserDomainResult<Person>;
-    fn delete_person(&self, person: Person) -> UserDomainResult<()>;
+    async fn update_all_characters_data(
+        &mut self,
+        owner_uuid: &uuid::Uuid,
+    ) -> WowTrackerDomainResult<()>;
 }

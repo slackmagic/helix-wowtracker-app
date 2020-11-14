@@ -3,8 +3,7 @@ use crate::APP_NAME;
 use actix_web::web::Data;
 use actix_web::{web, HttpRequest, HttpResponse};
 use helix_auth_lib::HelixAuth;
-use helix_user_domain::core::app_user::AppUser;
-use helix_user_domain::core::person::Person;
+
 use std::sync::{Arc, Mutex};
 
 pub fn healthcheck(_req: HttpRequest) -> HttpResponse {
@@ -45,6 +44,7 @@ struct RefreshToken {
     refresh_token: String,
 }
 
+/*
 pub fn login(
     wrap_state: Data<Arc<Mutex<AppState>>>,
     login_data: web::Json<LoginData>,
@@ -212,3 +212,4 @@ pub fn delete_user(
         Ok(_) => HttpResponse::NoContent().body("User deleted."),
     }
 }
+*/

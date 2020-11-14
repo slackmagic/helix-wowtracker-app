@@ -46,8 +46,7 @@ async fn main() -> io::Result<()> {
             .service(
                 web::scope("/api")
                     .route("/_", web::get().to(healthcheck))
-                    .route("/version", web::get().to(version))
-                    .service(web::scope("/").configure(get_routes_configuration)),
+                    .route("/version", web::get().to(version)), //.service(web::scope("/").configure(get_routes_configuration)),
             )
             .service(web::scope("/").configure(get_static_files_configuration))
     })
@@ -64,10 +63,8 @@ fn get_routes_configuration(cfg: &mut web::ServiceConfig) {
     //----------------------------------------------------------
     //___DOMAIN___
     //----------------------------------------------------------
-    //----------------------------------------------------------
-    //___USERSTORE___
-    //----------------------------------------------------------
-    cfg.service(
+
+    /*cfg.service(
         web::scope("")
             .route("/login", web::post().to(login))
             .service(
@@ -94,7 +91,7 @@ fn get_routes_configuration(cfg: &mut web::ServiceConfig) {
                             .route("", web::delete().to(delete_user)),
                     ),
             ),
-    );
+    );*/
 }
 
 fn get_static_files_configuration(cfg: &mut web::ServiceConfig) {

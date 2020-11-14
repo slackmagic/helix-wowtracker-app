@@ -1,2 +1,2 @@
-pub mod app_user;
-pub mod person;
+pub mod character_data;
+pub mod character_specs;
