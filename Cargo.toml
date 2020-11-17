@@ -2,6 +2,7 @@
 members = [
     "bin/helix-wowtracker-api",
     "helix-wowtracker-domain",
+    "storage/blizzard-api-storage"
 ]
 
 ##DEFAULT RUNNING BIN

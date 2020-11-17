@@ -7,8 +7,8 @@ pub enum StorageError {
     NotImplemented,
     #[error("Creation impossible")]
     CreationImpossible,
-    #[error("Another error")]
-    AnotherError,
+    #[error("Connection impossible")]
+    ConnectionImpossible,
     #[error("IO error: {source}")]
     Io {
         #[from]
@@ -18,6 +18,11 @@ pub enum StorageError {
     SerdeJson {
         #[from]
         source: serde_json::Error,
+    },
+    #[error("Tokio error: {source}")]
+    Tokio {
+        #[from]
+        source: tokio::task::JoinError,
     },
 }
 

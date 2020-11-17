@@ -17,7 +17,7 @@ use std::{env, io};
 
 const APP_NAME: &str = "WOWTRACKER_APP";
 
-#[actix_rt::main]
+#[actix_web::main]
 async fn main() -> io::Result<()> {
     println!("[HELIX {} {}]", APP_NAME, env!("CARGO_PKG_VERSION"));
 
@@ -47,7 +47,7 @@ async fn main() -> io::Result<()> {
                 web::scope("/api")
                     .route("/_", web::get().to(healthcheck))
                     .route("/version", web::get().to(version))
-                    .service(web::scope("/wowtracker").configure(get_routes_configuration)),
+                    .service(web::scope("/wow-tracker").configure(get_routes_configuration)),
             )
             .service(web::scope("/").configure(get_static_files_configuration))
     })
@@ -66,8 +66,12 @@ fn get_routes_configuration(cfg: &mut web::ServiceConfig) {
     //----------------------------------------------------------
 
     cfg.service(
-        web::scope("")
-            .service(web::scope("/characters").route("", web::get().to(get_all_characters))),
+        web::scope("").service(
+            web::scope("/characters")
+                .route("", web::get().to(get_all_characters_data))
+                .route("/last", web::get().to(get_last_characters_data))
+                .route("/test", web::get().to(test)),
+        ),
     );
 }
 
