@@ -24,7 +24,7 @@ chrono = { version = "^0.4", features = ["serde"] }
 
 ##async
 async-trait = "0.1.41"
-tokio = { version = "0.2.22", features = ["full"] }
+tokio = { version = "0.3.3", features = ["full"] }
 
 ##Blizzard API
 blizzard-api-rs = {git = "https://github.com/slackmagic/blizzard-api-rs", branch = "master"}

@@ -3,9 +3,9 @@ use crate::business::traits::*;
 use crate::core::character_data::CharacterData;
 use crate::core::character_specs::CharacterSpecs;
 use crate::storage::traits::*;
-
 use async_trait::async_trait;
 use helix_tracker_lib::business::traits::TrackerDomainTrait;
+use helix_tracker_lib::core::item::Item;
 use std::boxed::Box;
 
 const WOW_CHAR_DATA_TYPE: &str = "wow_char_data";
@@ -79,16 +79,30 @@ impl WowTrackerDomainTrait for WowTrackerDomain {
         &self,
         owner_uuid: &uuid::Uuid,
     ) -> WowTrackerDomainResult<()> {
-        let char_spec = CharacterSpecs {
-            name: "ölrinn".to_string(),
-            server: "archimonde".to_string(),
-            owned: true,
-        };
+        let items: Vec<Item<CharacterSpecs>> = self
+            .storage
+            .get_items(&WOW_CHAR_DATA_TYPE.to_string(), owner_uuid)
+            .await?;
 
-        let result = self.blizzard_api.retrieve_character_data(&char_spec).await;
-        match result {
-            Ok(char_data) => Ok(()),
-            Err(_) => Err(WowTrackerDomainError::StorageError),
+        let characters: Vec<(uuid::Uuid, CharacterSpecs)> = items
+            .iter()
+            .map(|item| {
+                (
+                    item.id.clone(),
+                    item.configuration.as_ref().unwrap().clone(),
+                )
+            })
+            .collect();
+
+        let characters_data: Vec<(uuid::Uuid, CharacterData)> = self
+            .blizzard_api
+            .retrieve_characters_data(characters)
+            .await?;
+
+        for (id, character_data) in characters_data {
+            self.storage.add_log(&id, &character_data).await?;
         }
+
+        Ok(())
     }
 }

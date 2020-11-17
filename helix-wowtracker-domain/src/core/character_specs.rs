@@ -1,4 +1,4 @@
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CharacterSpecs {
     pub name: String,
     pub server: String,

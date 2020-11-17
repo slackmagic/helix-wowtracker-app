@@ -45,7 +45,6 @@ impl BlizzardApiStorage {
         token: &OAuthToken,
         char_specs: &CharacterSpecs,
     ) -> StorageResult<CharacterData> {
-        println!("{:?}", char_specs);
         let api = BlizzardApiRS::new("eu".to_owned(), "profile-eu".to_owned(), "fr_FR".to_owned());
         let data_profile = api
             .get_wow_character_profile(&token, &char_specs.server, &char_specs.name)
@@ -98,8 +97,10 @@ impl BlizzardApiStorage {
         }
 
         for task in tasks {
-            let retrieved_data = task.await?;
-            result.push(retrieved_data);
+            match task.await {
+                Ok(retrieved_data) => result.push(retrieved_data),
+                Err(_) => (),
+            }
         }
 
         Ok(result)
@@ -117,7 +118,7 @@ impl BlizzardAPIStorageTrait for BlizzardApiStorage {
     }
 
     async fn retrieve_characters_data(
-        &mut self,
+        &self,
         chars_specs: Vec<(Uuid, CharacterSpecs)>,
     ) -> StorageResult<Vec<(Uuid, CharacterData)>> {
         BlizzardApiStorage::internal_retrieve_characters_data(&self.get_token().await?, chars_specs)

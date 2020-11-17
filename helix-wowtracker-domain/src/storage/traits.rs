@@ -12,7 +12,7 @@ pub trait BlizzardAPIStorageTrait: Send + Sync {
     ) -> StorageResult<CharacterData>;
 
     async fn retrieve_characters_data(
-        &mut self,
+        &self,
         chars_specs: Vec<(Uuid, CharacterSpecs)>,
     ) -> StorageResult<Vec<(Uuid, CharacterData)>>;
 }
