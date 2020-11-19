@@ -70,7 +70,8 @@ fn get_routes_configuration(cfg: &mut web::ServiceConfig) {
             web::scope("/characters")
                 .route("", web::get().to(get_all_characters_data))
                 .route("/last", web::get().to(get_last_characters_data))
-                .route("/test", web::get().to(test)),
+                .route("/previous", web::get().to(get_previous_characters_data))
+                .route("/update", web::get().to(update_characters)),
         ),
     );
 }

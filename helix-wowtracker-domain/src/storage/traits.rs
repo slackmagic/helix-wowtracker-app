@@ -16,3 +16,7 @@ pub trait BlizzardAPIStorageTrait: Send + Sync {
         chars_specs: Vec<(Uuid, CharacterSpecs)>,
     ) -> StorageResult<Vec<(Uuid, CharacterData)>>;
 }
+
+pub trait LevelXpStorageTrait: Sync + Send {
+    fn get_index(&self, value: String) -> StorageResult<Option<u32>>;
+}

@@ -67,6 +67,7 @@ impl BlizzardApiStorage {
             .unwrap();
 
         Ok(CharacterData {
+            id: char_specs.id,
             created_on: None,
             profile: Some(data_profile),
             statistics: Some(data_statistics),

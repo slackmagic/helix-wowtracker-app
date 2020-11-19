@@ -30,10 +30,14 @@ impl Configuration {
     }
 
     pub fn get_database_user() -> String {
-        env::var("HELIX_DB_USER").expect("BLIZZARD_SECRET not found.")
+        env::var("HELIX_DB_USER").expect("HELIX_DB_USER not found.")
     }
 
     pub fn get_database_password() -> String {
-        env::var("HELIX_DB_PASSWORD").expect("BLIZZARD_SECRET not found.")
+        env::var("HELIX_DB_PASSWORD").expect("HELIX_DB_PASSWORD not found.")
+    }
+
+    pub fn get_index_path() -> String {
+        env::var("HELIX_INDEX_PATH").expect("HELIX_INDEX_PATH not found.")
     }
 }

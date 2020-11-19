@@ -28,6 +28,7 @@ chrono = { version = "^0.4", features = ["serde"] }
 ##DOMAIN
 helix-wowtracker-domain = { path = "../../helix-wowtracker-domain" }
 blizzard-api-storage = { path = "../../storage/blizzard-api-storage" }
+memory-index-storage = { path = "../../storage/memory-index-storage" }
 helix-tracker-lib = {git = "https://github.com/slackmagic/helix-shared-lib", branch = "master"}
 helix-auth-lib = {git = "https://github.com/slackmagic/helix-shared-lib", branch = "master"}
 helix-config-lib = {git = "https://github.com/slackmagic/helix-shared-lib", branch = "master"}

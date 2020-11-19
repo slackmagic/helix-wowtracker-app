@@ -13,35 +13,37 @@ const WOW_CHAR_DATA_TYPE: &str = "wow_char_data";
 pub struct WowTrackerDomain {
     storage: Box<dyn TrackerDomainTrait<CharacterSpecs, CharacterData>>,
     blizzard_api: Box<dyn BlizzardAPIStorageTrait>,
+    xp_level_storage: Box<dyn LevelXpStorageTrait>,
 }
 
 impl WowTrackerDomain {
     pub fn new(
         storage: Box<dyn TrackerDomainTrait<CharacterSpecs, CharacterData>>,
         blizzard_api: Box<dyn BlizzardAPIStorageTrait>,
+        xp_level_storage: Box<dyn LevelXpStorageTrait>,
     ) -> Self {
         WowTrackerDomain {
             storage,
             blizzard_api,
+            xp_level_storage,
         }
     }
-}
 
-#[async_trait]
-impl WowTrackerDomainTrait for WowTrackerDomain {
-    async fn get_last_characters_data(
+    async fn get_characters_data(
         &self,
         owner_uuid: &uuid::Uuid,
+        steps: i64,
     ) -> WowTrackerDomainResult<Vec<CharacterData>> {
         let mut result = Vec::new();
         let char_data_list = self
             .storage
-            .get_last_logs_by_type(&WOW_CHAR_DATA_TYPE.to_string(), owner_uuid)
+            .get_last_logs_by_type(&WOW_CHAR_DATA_TYPE.to_string(), owner_uuid, steps)
             .await?;
 
         for log in char_data_list {
             match log.data {
                 Some(mut data) => {
+                    data.id = Some(log.item_id);
                     data.created_on = log.created_on;
                     result.push(data);
                 }
@@ -50,6 +52,23 @@ impl WowTrackerDomainTrait for WowTrackerDomain {
         }
 
         Ok(result)
+    }
+}
+
+#[async_trait]
+impl WowTrackerDomainTrait for WowTrackerDomain {
+    async fn get_previous_characters_data(
+        &self,
+        owner_uuid: &uuid::Uuid,
+    ) -> WowTrackerDomainResult<Vec<CharacterData>> {
+        self.get_characters_data(owner_uuid, 2).await
+    }
+
+    async fn get_last_characters_data(
+        &self,
+        owner_uuid: &uuid::Uuid,
+    ) -> WowTrackerDomainResult<Vec<CharacterData>> {
+        self.get_characters_data(owner_uuid, 1).await
     }
 
     async fn get_all_characters_data(
@@ -65,6 +84,7 @@ impl WowTrackerDomainTrait for WowTrackerDomain {
         for log in char_data_list {
             match log.data {
                 Some(mut data) => {
+                    data.id = Some(log.item_id);
                     data.created_on = log.created_on;
                     result.push(data);
                 }

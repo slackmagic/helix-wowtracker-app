@@ -9,7 +9,8 @@ use helix_wowtracker_domain::business::domain::WowTrackerDomain;
 use helix_wowtracker_domain::business::traits::WowTrackerDomainTrait;
 use helix_wowtracker_domain::core::character_data::CharacterData;
 use helix_wowtracker_domain::core::character_specs::CharacterSpecs;
-use helix_wowtracker_domain::storage::traits::BlizzardAPIStorageTrait;
+use helix_wowtracker_domain::storage::traits::*;
+use memory_index_storage::MemoryIndexStorage;
 
 use std::boxed::Box;
 
@@ -23,6 +24,7 @@ impl AppState {
             wow_tracker_domain: Box::new(WowTrackerDomain::new(
                 AppState::get_tracker_storage(),
                 AppState::get_blizzard_api_storage(),
+                AppState::get_memory_index_storage(),
             )),
         };
 
@@ -31,6 +33,12 @@ impl AppState {
 
     pub fn get_domain(&self) -> &Box<dyn WowTrackerDomainTrait + Send> {
         &self.wow_tracker_domain
+    }
+
+    fn get_memory_index_storage() -> Box<dyn LevelXpStorageTrait> {
+        Box::new(
+            MemoryIndexStorage::new(Configuration::get_index_path() + "level_xp.json").unwrap(),
+        )
     }
 
     fn get_tracker_storage() -> Box<dyn TrackerDomainTrait<CharacterSpecs, CharacterData>> {
