@@ -1,7 +1,9 @@
 use crate::business::error::*;
 use crate::business::traits::*;
+use crate::core::character::Character;
 use crate::core::character_data::CharacterData;
 use crate::core::character_specs::CharacterSpecs;
+use crate::core::character_stats::CharacterStatistics;
 use crate::storage::traits::*;
 use async_trait::async_trait;
 use helix_tracker_lib::business::traits::TrackerDomainTrait;
@@ -33,7 +35,7 @@ impl WowTrackerDomain {
         &self,
         owner_uuid: &uuid::Uuid,
         steps: i64,
-    ) -> WowTrackerDomainResult<Vec<CharacterData>> {
+    ) -> WowTrackerDomainResult<Vec<Character>> {
         let mut result = Vec::new();
         let char_data_list = self
             .storage
@@ -45,13 +47,41 @@ impl WowTrackerDomain {
                 Some(mut data) => {
                     data.id = Some(log.item_id);
                     data.created_on = log.created_on;
-                    result.push(data);
+                    let character = self.add_character_statistics(&data)?;
+                    result.push(character);
                 }
                 None => (),
             }
         }
 
         Ok(result)
+    }
+
+    fn add_character_statistics(
+        &self,
+        character_data: &CharacterData,
+    ) -> WowTrackerDomainResult<Character> {
+        let xp_needed = self
+            .xp_level_storage
+            .get_index(format!(
+                "{}",
+                &character_data.profile.as_ref().unwrap().level
+            ))?
+            .unwrap();
+        let statistics = CharacterStatistics {
+            level_current_progression: (character_data.profile.as_ref().unwrap().experience as f32
+                / xp_needed as f32),
+            level_progression_change: 0,
+            ilevel_progression_change: 0,
+            ilevel_progression_rate: 0,
+        };
+
+        let character: Character = Character {
+            data: Some(character_data.clone()),
+            statistics: Some(statistics),
+        };
+
+        Ok(character)
     }
 }
 
@@ -60,21 +90,21 @@ impl WowTrackerDomainTrait for WowTrackerDomain {
     async fn get_previous_characters_data(
         &self,
         owner_uuid: &uuid::Uuid,
-    ) -> WowTrackerDomainResult<Vec<CharacterData>> {
+    ) -> WowTrackerDomainResult<Vec<Character>> {
         self.get_characters_data(owner_uuid, 2).await
     }
 
     async fn get_last_characters_data(
         &self,
         owner_uuid: &uuid::Uuid,
-    ) -> WowTrackerDomainResult<Vec<CharacterData>> {
+    ) -> WowTrackerDomainResult<Vec<Character>> {
         self.get_characters_data(owner_uuid, 1).await
     }
 
     async fn get_all_characters_data(
         &self,
         owner_uuid: &uuid::Uuid,
-    ) -> WowTrackerDomainResult<Vec<CharacterData>> {
+    ) -> WowTrackerDomainResult<Vec<Character>> {
         let mut result = Vec::new();
         let char_data_list = self
             .storage
@@ -86,7 +116,8 @@ impl WowTrackerDomainTrait for WowTrackerDomain {
                 Some(mut data) => {
                     data.id = Some(log.item_id);
                     data.created_on = log.created_on;
-                    result.push(data);
+                    let character = self.add_character_statistics(&data)?;
+                    result.push(character);
                 }
                 None => (),
             }

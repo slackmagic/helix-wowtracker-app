@@ -5,7 +5,7 @@ use blizzard_api_rs::wow::character_statistics::CharacterStatistics;
 use chrono::prelude::*;
 use uuid::Uuid;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CharacterData {
     pub id: Option<Uuid>,
     pub created_on: Option<DateTime<Utc>>,
