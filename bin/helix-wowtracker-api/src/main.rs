@@ -49,7 +49,7 @@ async fn main() -> io::Result<()> {
                     .route("/version", web::get().to(version))
                     .service(web::scope("/wow-tracker").configure(get_routes_configuration)),
             )
-            .service(web::scope("/").configure(get_static_files_configuration))
+            .service(web::scope("").route("/{filename:.*}", web::get().to(serve_static_file)))
     })
     .bind(&addr)
     .expect("Cannot bind to address.")
@@ -73,17 +73,6 @@ fn get_routes_configuration(cfg: &mut web::ServiceConfig) {
                 .route("/previous", web::get().to(get_previous_characters_data))
                 .route("/update", web::get().to(update_characters)),
         ),
-    );
-}
-
-fn get_static_files_configuration(cfg: &mut web::ServiceConfig) {
-    //----------------------------------------------------------
-    //___STATIC_FILES___
-    //----------------------------------------------------------
-    cfg.service(
-        fs::Files::new("", "./static")
-            .prefer_utf8(true)
-            .index_file("index.html"),
     );
 }
 
