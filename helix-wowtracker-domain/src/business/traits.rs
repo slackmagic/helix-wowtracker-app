@@ -1,6 +1,5 @@
 use crate::business::error::*;
 use crate::core::character::Character;
-use crate::core::character_data::CharacterData;
 use async_trait::async_trait;
 
 #[async_trait]
